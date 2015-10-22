@@ -102,7 +102,7 @@ sdist/
 var/
 *.egg-info/
 .installed.cfg
-*.egg
+# *.egg - commented out because it is required for Panda3d
 
 # PyInstaller
 #  Usually these files are written by a python script from a template

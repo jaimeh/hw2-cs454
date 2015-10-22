@@ -8,8 +8,8 @@ from direct.gui.OnscreenText import OnscreenText
 from direct.actor.Actor import Actor
 from direct.showbase.DirectObject import DirectObject
 import random, sys, os, math
-from Panda import Panda
-from Car import Car
+from panda import Panda
+from car import Car
 
 SPEED = 0.5
 
