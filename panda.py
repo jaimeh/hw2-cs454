@@ -33,7 +33,7 @@ class Panda:
             self.actor.setR(0)
         
     def waitedTooLong(self, time):
-        if time - self.timer > 5:
+        if time - self.timer > 20:
             if not self.grav > 0:
                 self.falling = True
             if not self.falling:
