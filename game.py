@@ -10,6 +10,7 @@ from direct.showbase.DirectObject import DirectObject
 import random, sys, os, math
 from panda import Panda
 from car import Car
+from ball import Ball
 
 SPEED = 0.5
 
@@ -32,7 +33,6 @@ class World(DirectObject):
 
         # Post the instructions
 
-        self.title = addTitle("Panda3D Tutorial: Roaming Ralph (Walking on the Moon)")
         self.inst1 = addInstructions(0.95, "[ESC]: Quit")
         self.inst2 = addInstructions(0.90, "[Left Arrow]: Rotate Ralph Left")
         self.inst3 = addInstructions(0.85, "[Right Arrow]: Rotate Ralph Right")
@@ -66,6 +66,12 @@ class World(DirectObject):
         # Creating Car
         
         self.car = Car(render, (10, 10, 0))
+
+        # Creating Ball
+
+        self.ball1 = Ball(render, (10, 0, 0.35), 0.3)
+        self.ball2 = Ball(render, (0, -20, 0.59), 0.6)
+        self.ball3 = Ball(render, (-30, 0, 0.95), 1)
 
         # Create a floater object.  We use the "floater" as a temporary
         # variable in a variety of calculations.
