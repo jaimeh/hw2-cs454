@@ -41,7 +41,7 @@ class World(DirectObject):
         self.inst7 = addInstructions(0.65, "[S]: Rotate Camera Right")
         
         # Set up the environment
-        #
+        
         self.environ = loader.loadModel("models/square")      
         self.environ.reparentTo(render)
         self.environ.setPos(0,0,0)
@@ -69,9 +69,9 @@ class World(DirectObject):
 
         # Creating Ball
 
-        self.ball1 = Ball(render, (10, 0, 0.35), 0.3)
-        self.ball2 = Ball(render, (0, -20, 0.59), 0.6)
-        self.ball3 = Ball(render, (-30, 0, 0.95), 1)
+        self.ball1 = Ball(render, (10, 0, 0.35), 0.3, ("models/sun_1k_tex.jpg"))
+        self.ball2 = Ball(render, (0, -20, 0.59), 0.6, ("models/mars_1k_tex.jpg"))
+        self.ball3 = Ball(render, (-30, 0, 0.95), 1, ("models/venus_1k_tex.jpg"))
 
         # Create a floater object.  We use the "floater" as a temporary
         # variable in a variety of calculations.
@@ -96,6 +96,7 @@ class World(DirectObject):
         taskMgr.add(self.move,"moveTask")
 
         # Game state variables
+
         self.isMoving = False
 
         # Set up the camera
@@ -105,6 +106,7 @@ class World(DirectObject):
         
 
         # Create some lighting
+
         ambientLight = AmbientLight("ambientLight")
         ambientLight.setColor(Vec4(.3, .3, .3, 1))
         directionalLight = DirectionalLight("directionalLight")
