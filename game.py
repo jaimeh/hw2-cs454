@@ -68,13 +68,31 @@ class World(DirectObject):
         self.car = Car(render, (10, 10, 0))
 
         # Creating Ball
+        self.ball1 = loader.loadModel("models/ball")
+        self.ball1_tex = loader.loadTexture("models/sun_1k_tex.jpg")
+        self.ball1.setTexture(self.ball1_tex, 1)
+        self.ball1.reparentTo(render)
+        self.ball1.setScale(0.3)
+        self.ball1.setPos(10, 0, 0.35)
 
-        self.ball1 = Ball(render, (10, 0, 0.35), 0.3)
-        self.ball2 = Ball(render, (0, -20, 0.59), 0.6)
-        self.ball3 = Ball(render, (-30, 0, 0.95), 1)
+        self.ball2 = loader.loadModel("models/ball")
+        self.ball2_tex = loader.loadTexture("models/moon_1k_tex.jpg")
+        self.ball2.setTexture(self.ball2_tex, 1)
+        self.ball2.reparentTo(render)
+        self.ball2.setScale(0.6)
+        self.ball2.setPos(0, -20, 0.59)
+
+        self.ball3 = loader.loadModel("models/ball")
+        self.ball3_tex = loader.loadTexture("models/venus_1k_tex.jpg")
+        self.ball3.setTexture(self.ball3_tex, 1)
+        self.ball3.reparentTo(render)
+        self.ball3.setScale(1)
+        self.ball3.setPos(-30, 0, 0.95)
 
         # Create a floater object.  We use the "floater" as a temporary
         # variable in a variety of calculations.
+
+        
         
         self.floater = NodePath(PandaNode("floater"))
         self.floater.reparentTo(render)
@@ -121,6 +139,16 @@ class World(DirectObject):
 
     # Accepts arrow keys to move either the player or the menu cursor,
     # Also deals with grid checking and collision detection
+
+    def loadbBall(self):
+
+             #Load ball1
+            self.ball1 = loader.loadModel("models/ball")
+            self.ball1_tex = loader.loadTexture("models/sun_1k_tex.jpg")
+            self.ball1.setTexture(self.ball1_tex, 1)
+            self.ball1.reparentTo(render)
+            self.ball1.setScale(0.3)
+            self.ball1.setPos(10, 0, 0.35)
     def move(self, task):
 
         # If the camera-left key is pressed, move camera left.

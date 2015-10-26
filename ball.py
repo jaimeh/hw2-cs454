@@ -9,3 +9,4 @@ class Ball:
         self.model.reparentTo(parent)
         self.model.setScale(scale)
         self.model.setPos(pos)
+
