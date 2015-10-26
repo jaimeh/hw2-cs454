@@ -75,8 +75,6 @@ class World(DirectObject):
 
         # Create a floater object.  We use the "floater" as a temporary
         # variable in a variety of calculations.
-
-        
         
         self.floater = NodePath(PandaNode("floater"))
         self.floater.reparentTo(render)
