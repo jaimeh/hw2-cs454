@@ -126,15 +126,6 @@ class World(DirectObject):
     # Accepts arrow keys to move either the player or the menu cursor,
     # Also deals with grid checking and collision detection
 
-    def loadbBall(self):
-         #Load ball1
-        self.ball1 = loader.loadModel("models/ball")
-        self.ball1_tex = loader.loadTexture("models/sun_1k_tex.jpg")
-        self.ball1.setTexture(self.ball1_tex, 1)
-        self.ball1.reparentTo(render)
-        self.ball1.setScale(0.3)
-        self.ball1.setPos(10, 0, 0.35)
-
     def move(self, task):
 
         # If the camera-left key is pressed, move camera left.
