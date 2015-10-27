@@ -27,8 +27,8 @@ def addTitle(text):
 class World(DirectObject):
 
     def __init__(self):
-        
-        self.keyMap = {"left":0, "right":0, "forward":0, "cam-left":0, "cam-right":0}
+
+        self.keyMap = {"left":0, "right":0, "forward":0, "reverse":0, "cam-left":0, "cam-right":0}
         base.win.setClearColor(Vec4(0,0,0,1))
 
         # Post the instructions
@@ -39,16 +39,16 @@ class World(DirectObject):
         self.inst4 = addInstructions(0.80, "[Up Arrow]: Run Ralph Forward")
         self.inst6 = addInstructions(0.70, "[A]: Rotate Camera Left")
         self.inst7 = addInstructions(0.65, "[S]: Rotate Camera Right")
-        
+
         # Set up the environment
-        
-        self.environ = loader.loadModel("models/square")      
+
+        self.environ = loader.loadModel("models/square")
         self.environ.reparentTo(render)
         self.environ.setPos(0,0,0)
         self.environ.setScale(100,100,1)
         self.moon_tex = loader.loadTexture("models/moon_1k_tex.jpg")
         self.environ.setTexture(self.moon_tex, 1)
-        
+
         # Create the main character, Ralph
 
         self.ralph = Actor("models/ralph",
@@ -57,14 +57,14 @@ class World(DirectObject):
         self.ralph.reparentTo(render)
         self.ralph.setScale(.2)
         self.ralph.setPos(0,0,0)
-        
+
         # Creating Pandas
-        
+
         self.panda1 = Panda(render, globalClock.getFrameTime(), (30, 20, 0))
         self.panda2 = Panda(render, globalClock.getFrameTime(), (20, 40, 0))
-        
+
         # Creating Car
-        
+
         self.car = Car(render, (10, 10, 0))
 
         # Creating Ball
@@ -75,23 +75,25 @@ class World(DirectObject):
 
         # Create a floater object.  We use the "floater" as a temporary
         # variable in a variety of calculations.
-        
+
         self.floater = NodePath(PandaNode("floater"))
         self.floater.reparentTo(render)
 
         # Accept the control keys for movement and rotation
 
         self.accept("escape", sys.exit)
-        self.accept("arrow_left", self.setKey, ["left",1])
-        self.accept("arrow_right", self.setKey, ["right",1])
-        self.accept("arrow_up", self.setKey, ["forward",1])
-        self.accept("a", self.setKey, ["cam-left",1])
-        self.accept("s", self.setKey, ["cam-right",1])
-        self.accept("arrow_left-up", self.setKey, ["left",0])
-        self.accept("arrow_right-up", self.setKey, ["right",0])
-        self.accept("arrow_up-up", self.setKey, ["forward",0])
-        self.accept("a-up", self.setKey, ["cam-left",0])
-        self.accept("s-up", self.setKey, ["cam-right",0])
+        self.accept("a", self.setKey, ["left",1])
+        self.accept("d", self.setKey, ["right",1])
+        self.accept("w", self.setKey, ["forward",1])
+        self.accept("s", self.setKey, ["reverse",1])
+        self.accept("arrow_left", self.setKey, ["cam-left",1])
+        self.accept("arrow_right", self.setKey, ["cam-right",1])
+        self.accept("a-up", self.setKey, ["left",0])
+        self.accept("d-up", self.setKey, ["right",0])
+        self.accept("w-up", self.setKey, ["forward",0])
+        self.accept("s-up", self.setKey, ["reverse",0])
+        self.accept("arrow_left-up", self.setKey, ["cam-left",0])
+        self.accept("arrow_right-up", self.setKey, ["cam-right",0])
 
         taskMgr.add(self.move,"moveTask")
 
@@ -100,10 +102,9 @@ class World(DirectObject):
         self.isMoving = False
 
         # Set up the camera
-        
+
         base.disableMouse()
         base.camera.setPos(self.ralph.getX(),self.ralph.getY()+10,2)
-        
 
         # Create some lighting
 
@@ -115,24 +116,24 @@ class World(DirectObject):
         directionalLight.setSpecularColor(Vec4(1, 1, 1, 1))
         render.setLight(render.attachNewNode(ambientLight))
         render.setLight(render.attachNewNode(directionalLight))
-    
+
     #Records the state of the arrow keys
     def setKey(self, key, value):
         self.keyMap[key] = value
-    
+
 
     # Accepts arrow keys to move either the player or the menu cursor,
     # Also deals with grid checking and collision detection
 
     def loadbBall(self):
+         #Load ball1
+        self.ball1 = loader.loadModel("models/ball")
+        self.ball1_tex = loader.loadTexture("models/sun_1k_tex.jpg")
+        self.ball1.setTexture(self.ball1_tex, 1)
+        self.ball1.reparentTo(render)
+        self.ball1.setScale(0.3)
+        self.ball1.setPos(10, 0, 0.35)
 
-             #Load ball1
-            self.ball1 = loader.loadModel("models/ball")
-            self.ball1_tex = loader.loadTexture("models/sun_1k_tex.jpg")
-            self.ball1.setTexture(self.ball1_tex, 1)
-            self.ball1.reparentTo(render)
-            self.ball1.setScale(0.3)
-            self.ball1.setPos(10, 0, 0.35)
     def move(self, task):
 
         # If the camera-left key is pressed, move camera left.
@@ -157,12 +158,21 @@ class World(DirectObject):
             self.ralph.setH(self.ralph.getH() - 300 * globalClock.getDt())
         if (self.keyMap["forward"]!=0):
             self.ralph.setY(self.ralph, -25 * globalClock.getDt())
+        if (self.keyMap["reverse"]!=0):
+            self.ralph.setY(self.ralph, +25 * globalClock.getDt())
 
         # If ralph is moving, loop the run animation.
         # If he is standing still, stop the animation.
 
-        if (self.keyMap["forward"]!=0) or (self.keyMap["left"]!=0) or (self.keyMap["right"]!=0):
+        if ((self.keyMap["forward"]!=0) or (self.keyMap["left"]!=0) or
+            (self.keyMap["right"]!=0)):
             if self.isMoving is False:
+                self.ralph.setPlayRate(1, "run")
+                self.ralph.loop("run")
+                self.isMoving = True
+        elif (self.keyMap["reverse"]!=0):
+            if self.isMoving is False:
+                self.ralph.setPlayRate(-1, "run")
                 self.ralph.loop("run")
                 self.isMoving = True
         else:
@@ -185,24 +195,24 @@ class World(DirectObject):
             base.camera.setPos(base.camera.getPos() - camvec*(5-camdist))
             camdist = 5.0
 
-         
+
         # The camera should look in ralph's direction,
         # but it should also try to stay horizontal, so look at
         # a floater which hovers above ralph's head.
-        
+
         self.floater.setPos(self.ralph.getPos())
         self.floater.setZ(self.ralph.getZ() + 2.0)
         base.camera.lookAt(self.floater)
-        
+
         # Panda action
-        
+
         self.panda1.follow(self.ralph, globalClock.getFrameTime())
         self.panda2.follow(self.ralph, globalClock.getFrameTime())
         self.panda1.waitedTooLong(globalClock.getFrameTime())
         self.panda2.waitedTooLong(globalClock.getFrameTime())
-        
+
         # Car action
-        
+
         self.car.circle(self.ralph)
 
         return task.cont
@@ -210,4 +220,3 @@ class World(DirectObject):
 
 w = World()
 run()
-
