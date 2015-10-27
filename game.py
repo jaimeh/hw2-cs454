@@ -40,6 +40,8 @@ class World(DirectObject):
         self.inst5 = addInstructions(0.75, "[S]: Run Ralph Backwards")
         self.inst6 = addInstructions(0.70, "[Left Arrow]: Rotate Camera Left")
         self.inst7 = addInstructions(0.65, "[Right Arrow]: Rotate Camera Right")
+        self.inst8 = addInstructions(0.60, "[Down Arrow]: Slow Down Ralph")
+        self.inst9 = addInstructions(0.55, "[Up Arrow]: Speed Up Ralph")
 
         # Set up the environment
 
@@ -152,6 +154,10 @@ class World(DirectObject):
             self.ralph.setY(self.ralph, -25 * globalClock.getDt())
         if (self.keyMap["reverse"]!=0):
             self.ralph.setY(self.ralph, +25 * globalClock.getDt())
+        #if (self.keyMap["fast"]!=0):
+        #    x = 0.5
+        #if (self.keyMap["slow"]!=0):
+        #    x = 0.1
 
         # If ralph is moving, loop the run animation.
         # If he is standing still, stop the animation.
