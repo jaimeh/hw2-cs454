@@ -34,11 +34,12 @@ class World(DirectObject):
         # Post the instructions
 
         self.inst1 = addInstructions(0.95, "[ESC]: Quit")
-        self.inst2 = addInstructions(0.90, "[Left Arrow]: Rotate Ralph Left")
-        self.inst3 = addInstructions(0.85, "[Right Arrow]: Rotate Ralph Right")
-        self.inst4 = addInstructions(0.80, "[Up Arrow]: Run Ralph Forward")
-        self.inst6 = addInstructions(0.70, "[A]: Rotate Camera Left")
-        self.inst7 = addInstructions(0.65, "[S]: Rotate Camera Right")
+        self.inst2 = addInstructions(0.90, "[A]: Rotate Ralph Left")
+        self.inst3 = addInstructions(0.85, "[D]: Rotate Ralph Right")
+        self.inst4 = addInstructions(0.80, "[W]: Run Ralph Forward")
+        self.inst5 = addInstructions(0.75, "[S]: Run Ralph Backwards")
+        self.inst6 = addInstructions(0.70, "[Left Arrow]: Rotate Camera Left")
+        self.inst7 = addInstructions(0.65, "[Right Arrow]: Rotate Camera Right")
 
         # Set up the environment
 
