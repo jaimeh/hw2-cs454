@@ -215,6 +215,12 @@ class World(DirectObject):
 
         self.car.circle(self.ralph)
 
+        # Ball action
+
+        self.ball1.rotate(self.ralph)
+        self.ball2.rotate(self.ralph)
+        self.ball3.rotate(self.ralph)
+
         return task.cont
 
 

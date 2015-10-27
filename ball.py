@@ -11,3 +11,7 @@ class Ball:
         self.model.setPos(pos)
         self.model_tex = loader.loadTexture(texture)
         self.model.setTexture(self.model_tex, 1)
+
+    def rotate(self, target):
+        if self.model.getPos(target).length() < 50:
+            self.model.setH(self.model.getH() + 90 * globalClock.getDt())
