@@ -54,8 +54,7 @@ class World(DirectObject):
 
         # Create the main character, Ralph
 
-        player = self.loadCharacter('ralph')
-        self.player = player.actor
+        self.player = self.loadCharacter('ralph')
 
         ############ Removed Pandas and Car as they are not needed ###########
         # Creating Pandas
@@ -130,11 +129,11 @@ class World(DirectObject):
     # Character name needs to be: car, ralph or panda
     def loadCharacter(self, name):
         if name == 'ralph':
-            return Ralph(render, (30, 30, 0))
+            return Ralph(render, (30, 30, 0)).actor
         elif name == 'car':
-            return Car(render, (10, 10, 0))
+            return Car(render, (10, 10, 0)).model
         elif name == 'panda':
-            return Panda(render, (20, 20, 0))
+            return Panda(render, (20, 20, 0)).actor
     # Accepts arrow keys to move either the player or the menu cursor,
     # Also deals with grid checking and collision detection
 
