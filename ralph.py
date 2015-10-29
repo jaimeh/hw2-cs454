@@ -12,3 +12,6 @@ class Ralph:
 
     def position(self):
         return self.actor.getPos()
+
+    def move(self):
+        return False

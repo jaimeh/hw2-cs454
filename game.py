@@ -54,7 +54,9 @@ class World(DirectObject):
 
         # Create the main character, Ralph
 
-        self.player = self.loadCharacter('ralph')
+        playerChoice = raw_input('Select character [ralph, panda, car]: ')
+
+        self.player = self.loadCharacter(playerChoice)
 
         ############ Removed Pandas and Car as they are not needed ###########
         # Creating Pandas
