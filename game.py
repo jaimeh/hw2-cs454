@@ -53,14 +53,15 @@ class World(DirectObject):
 
         # Create the main character, Ralph
 
-        self.ralph = Actor("models/ralph",
+        self.player = Actor("models/ralph",
+        
                                  {"run":"models/ralph-run",
                                   "walk":"models/ralph-walk"})
-        self.ralph.reparentTo(render)
-        self.ralph.setScale(.2)
-        self.ralph.setPos(0,0,0)
+        self.player.reparentTo(render)
+        self.player.setScale(.2)
+        self.player.setPos(0,0,0)
 
-        ############## Removed Pandas as they are not needed ##################
+        ############ Removed Pandas and Car as they are not needed ###########
         # Creating Pandas
 
         #self.panda1 = Panda(render, globalClock.getFrameTime(), (30, 20, 0))
@@ -113,7 +114,7 @@ class World(DirectObject):
         # Set up the camera
 
         base.disableMouse()
-        base.camera.setPos(self.ralph.getX(),self.ralph.getY()+10,2)
+        base.camera.setPos(self.player.getX(),self.player.getY()+10,2)
 
         # Create some lighting
 
@@ -136,22 +137,22 @@ class World(DirectObject):
 
     def checkCollision(self):
 
-        if ((self.ralph.getPos() - self.ball1.position()).length() < 0.5):
+        if ((self.player.getPos() - self.ball1.position()).length() < 0.5):
             self.canMove=False
 
-        elif (self.ralph.getPos() - self.ball2.position()).length() < 1.0:
+        elif (self.player.getPos() - self.ball2.position()).length() < 1.0:
             self.canMove=False
 
-        elif (self.ralph.getPos() - self.ball3.position()).length() < 1.6:
+        elif (self.player.getPos() - self.ball3.position()).length() < 1.6:
             self.canMove=False
 
-        # elif (self.ralph.getPos() - self.car.position()).length() < 1.6:
+        # elif (self.player.getPos() - self.car.position()).length() < 1.6:
         #     self.canMove=False
 
-        # elif (self.ralph.getPos() - self.panda1.position()).length() < 1.6:
+        # elif (self.player.getPos() - self.panda1.position()).length() < 1.6:
         #     self.canMove=False
         #
-        # elif (self.ralph.getPos() - self.panda2.position()).length() < 1.6:
+        # elif (self.player.getPos() - self.panda2.position()).length() < 1.6:
         #     self.canMove=False
 
         else:
@@ -164,7 +165,7 @@ class World(DirectObject):
         # If the camera-left key is pressed, move camera left.
         # If the camera-right key is pressed, move camera right.
 
-        base.camera.lookAt(self.ralph)
+        base.camera.lookAt(self.player)
         if (self.keyMap["cam-left"]!=0):
             base.camera.setX(base.camera, -20 * globalClock.getDt())
         if (self.keyMap["cam-right"]!=0):
@@ -173,37 +174,37 @@ class World(DirectObject):
         # save ralph's initial position so that we can restore it,
         # in case he falls off the map or runs into something.
 
-        startpos = self.ralph.getPos()
+        startpos = self.player.getPos()
 
         # If a move-key is pressed, move ralph in the specified direction.
 
         if (self.keyMap["left"]!=0):
             if not(self.canMove):
                 self.canMove=True
-            self.ralph.setH(self.ralph.getH() + 300 * globalClock.getDt())
+            self.player.setH(self.player.getH() + 300 * globalClock.getDt())
         if (self.keyMap["right"]!=0):
             if not(self.canMove):
                 self.canMove=True
-            self.ralph.setH(self.ralph.getH() - 300 * globalClock.getDt())
+            self.player.setH(self.player.getH() - 300 * globalClock.getDt())
         if (self.keyMap["forward"]!=0):
             if (self.keyMap["speed-toggle"]!=0):
-                self.ralph.setY(self.ralph, -10 * globalClock.getDt())
+                self.player.setY(self.player, -10 * globalClock.getDt())
                 if self.checkCollision():
-                    self.ralph.setY(self.ralph, +10 * globalClock.getDt())
+                    self.player.setY(self.player, +10 * globalClock.getDt())
             else:
-                self.ralph.setY(self.ralph, -25 * globalClock.getDt())
+                self.player.setY(self.player, -25 * globalClock.getDt())
                 if self.checkCollision():
-                    self.ralph.setY(self.ralph, +25 * globalClock.getDt())
+                    self.player.setY(self.player, +25 * globalClock.getDt())
 
         if (self.keyMap["reverse"]!=0):
             if (self.keyMap["speed-toggle"]!=0):
-                self.ralph.setY(self.ralph, +10 * globalClock.getDt())
+                self.player.setY(self.player, +10 * globalClock.getDt())
                 if self.checkCollision():
-                    self.ralph.setY(self.ralph, -10 * globalClock.getDt())
+                    self.player.setY(self.player, -10 * globalClock.getDt())
             else:
-                self.ralph.setY(self.ralph, +25 * globalClock.getDt())
+                self.player.setY(self.player, +25 * globalClock.getDt())
                 if self.checkCollision():
-                    self.ralph.setY(self.ralph, -250 * globalClock.getDt())
+                    self.player.setY(self.player, -250 * globalClock.getDt())
 
         # If ralph is moving, loop the run animation.
         # If he is standing still, stop the animation.
@@ -212,40 +213,40 @@ class World(DirectObject):
             (self.keyMap["right"]!=0)) and (self.keyMap["speed-toggle"]!=0):
             if self.isWalking is False:
                 self.isWalking = True
-                self.ralph.setPlayRate(1, "walk")
-                self.ralph.loop("walk")
+                self.player.setPlayRate(1, "walk")
+                self.player.loop("walk")
 
         elif ((self.keyMap["forward"]!=0) or (self.keyMap["left"]!=0) or
             (self.keyMap["right"]!=0)):
             if self.isMoving is False or self.isWalking:
                 self.isWalking = False
                 self.isMoving = True
-                self.ralph.setPlayRate(1, "run")
-                self.ralph.loop("run")
+                self.player.setPlayRate(1, "run")
+                self.player.loop("run")
 
         elif (self.keyMap["reverse"]!=0) and (self.keyMap["speed-toggle"]!=0):
             if self.isWalking is False:
                 self.isWalking = True
-                self.ralph.setPlayRate(-1, "walk")
-                self.ralph.loop("walk")
+                self.player.setPlayRate(-1, "walk")
+                self.player.loop("walk")
 
         elif (self.keyMap["reverse"]!=0):
             if self.isMoving is False or self.isWalking:
                 self.isWalking = False
                 self.isMoving = True
-                self.ralph.setPlayRate(-1, "run")
-                self.ralph.loop("run")
+                self.player.setPlayRate(-1, "run")
+                self.player.loop("run")
         else:
             if self.isMoving:
-                self.ralph.stop()
-                self.ralph.pose("walk",5)
+                self.player.stop()
+                self.player.pose("walk",5)
                 self.isMoving = False
                 self.isWalking = False
 
         # If the camera is too far from ralph, move it closer.
         # If the camera is too close to ralph, move it farther.
 
-        camvec = self.ralph.getPos() - base.camera.getPos()
+        camvec = self.player.getPos() - base.camera.getPos()
         camvec.setZ(0)
         camdist = camvec.length()
         camvec.normalize()
@@ -261,26 +262,26 @@ class World(DirectObject):
         # but it should also try to stay horizontal, so look at
         # a floater which hovers above ralph's head.
 
-        self.floater.setPos(self.ralph.getPos())
-        self.floater.setZ(self.ralph.getZ() + 2.0)
+        self.floater.setPos(self.player.getPos())
+        self.floater.setZ(self.player.getZ() + 2.0)
         base.camera.lookAt(self.floater)
 
         # Panda action
 
-        #self.panda1.follow(self.ralph, globalClock.getFrameTime())
-        #self.panda2.follow(self.ralph, globalClock.getFrameTime())
+        #self.panda1.follow(self.player, globalClock.getFrameTime())
+        #self.panda2.follow(self.player, globalClock.getFrameTime())
         #self.panda1.waitedTooLong(globalClock.getFrameTime())
         #self.panda2.waitedTooLong(globalClock.getFrameTime())
 
         # Car action
 
-        # self.car.circle(self.ralph)
+        # self.car.circle(self.player)
 
         # Ball action
 
-        self.ball1.rotate(self.ralph)
-        self.ball2.rotate(self.ralph)
-        self.ball3.rotate(self.ralph)
+        self.ball1.rotate(self.player)
+        self.ball2.rotate(self.player)
+        self.ball3.rotate(self.player)
 
         return task.cont
 
