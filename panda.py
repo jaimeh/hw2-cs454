@@ -2,7 +2,7 @@ from direct.actor.Actor import Actor
 from panda3d.core import NodePath
 
 class Panda:
-    def __init__(self, parent, time, pos):
+    def __init__(self, parent, pos, time = globalClock.getFrameTime()):
         self.actor = Actor("models/panda-model",
                            {"walk": "models/panda-walk4"})
         self.actor.reparentTo(parent)
@@ -12,14 +12,14 @@ class Panda:
         self.grav = 1
         self.falling = False
         self.moving = False
-    
+
     def follow(self, target, time):
         if 20 < self.actor.getPos(target).length() < 50:
             self.timer = time
             self.actor.lookAt(target)
             self.actor.setH(self.actor.getH() - 180)
             self.actor.setY(self.actor, -10)
-        
+
         if 20 < self.actor.getPos(target).length() < 50:
             if self.moving == False:
                 self.moving = True
@@ -31,7 +31,7 @@ class Panda:
             self.actor.setZ(0)
             self.actor.setP(0)
             self.actor.setR(0)
-        
+
     def waitedTooLong(self, time):
         if time - self.timer > 20:
             if not self.grav > 0:

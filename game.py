@@ -11,6 +11,7 @@ import random, sys, os, math
 from panda import Panda
 from car import Car
 from ball import Ball
+from ralph import Ralph
 
 SPEED = 0.5
 
@@ -53,13 +54,8 @@ class World(DirectObject):
 
         # Create the main character, Ralph
 
-        self.player = Actor("models/ralph",
-        
-                                 {"run":"models/ralph-run",
-                                  "walk":"models/ralph-walk"})
-        self.player.reparentTo(render)
-        self.player.setScale(.2)
-        self.player.setPos(0,0,0)
+        player = self.loadCharacter('ralph')
+        self.player = player.actor
 
         ############ Removed Pandas and Car as they are not needed ###########
         # Creating Pandas
@@ -131,7 +127,14 @@ class World(DirectObject):
     def setKey(self, key, value):
         self.keyMap[key] = value
 
-
+    # Character name needs to be: car, ralph or panda
+    def loadCharacter(self, name):
+        if name == 'ralph':
+            return Ralph(render, (30, 30, 0))
+        elif name == 'car':
+            return Car(render, (10, 10, 0))
+        elif name == 'panda':
+            return Panda(render, (20, 20, 0))
     # Accepts arrow keys to move either the player or the menu cursor,
     # Also deals with grid checking and collision detection
 
