@@ -19,3 +19,6 @@ class Car:
         elif self.tooClose > 0:
             self.model.setY(self.model, -0.5)
             self.tooClose = self.tooClose - 1
+
+    def position(self):
+        return self.model.getPos()
