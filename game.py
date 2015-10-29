@@ -60,14 +60,15 @@ class World(DirectObject):
         self.ralph.setScale(.2)
         self.ralph.setPos(0,0,0)
 
+        ############## Removed Pandas as they are not needed ##################
         # Creating Pandas
 
-        self.panda1 = Panda(render, globalClock.getFrameTime(), (30, 20, 0))
-        self.panda2 = Panda(render, globalClock.getFrameTime(), (20, 40, 0))
+        #self.panda1 = Panda(render, globalClock.getFrameTime(), (30, 20, 0))
+        #self.panda2 = Panda(render, globalClock.getFrameTime(), (20, 40, 0))
 
         # Creating Car
 
-        self.car = Car(render, (10, 10, 0))
+        # self.car = Car(render, (10, 10, 0))
 
         # Creating Ball
 
@@ -144,14 +145,14 @@ class World(DirectObject):
         elif (self.ralph.getPos() - self.ball3.position()).length() < 1.6:
             self.canMove=False
 
-        elif (self.ralph.getPos() - self.car.position()).length() < 1.6:
-            self.canMove=False
+        # elif (self.ralph.getPos() - self.car.position()).length() < 1.6:
+        #     self.canMove=False
 
-        elif (self.ralph.getPos() - self.panda1.position()).length() < 1.6:
-            self.canMove=False
-
-        elif (self.ralph.getPos() - self.panda2.position()).length() < 1.6:
-            self.canMove=False
+        # elif (self.ralph.getPos() - self.panda1.position()).length() < 1.6:
+        #     self.canMove=False
+        #
+        # elif (self.ralph.getPos() - self.panda2.position()).length() < 1.6:
+        #     self.canMove=False
 
         else:
             self.canMove=True
@@ -266,14 +267,14 @@ class World(DirectObject):
 
         # Panda action
 
-        self.panda1.follow(self.ralph, globalClock.getFrameTime())
-        self.panda2.follow(self.ralph, globalClock.getFrameTime())
-        self.panda1.waitedTooLong(globalClock.getFrameTime())
-        self.panda2.waitedTooLong(globalClock.getFrameTime())
+        #self.panda1.follow(self.ralph, globalClock.getFrameTime())
+        #self.panda2.follow(self.ralph, globalClock.getFrameTime())
+        #self.panda1.waitedTooLong(globalClock.getFrameTime())
+        #self.panda2.waitedTooLong(globalClock.getFrameTime())
 
         # Car action
 
-        self.car.circle(self.ralph)
+        # self.car.circle(self.ralph)
 
         # Ball action
 
