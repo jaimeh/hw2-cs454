@@ -43,11 +43,11 @@ class MyApp(ShowBase):
 	#options for the clients when game starts	
         def options(self):
                 self.option = 0
-		self.option = str(raw_input("Please Selection An Option\n1-Enter Chat\n2-Send A Message\n3-Quit\n"))
+		self.option = str(raw_input("Please Selection An Option\n1-Enter Chat\n2-Messages\n3-Quit\n"))
                 if self.option == "1":
                         self.chat()
                 if self.option == "2":
-                        self.message()
+                        self.messages()
                 if self.option == "3":
                         sys.exit(0)
                         
@@ -70,9 +70,34 @@ class MyApp(ShowBase):
 		pkg.addUint16(112)
 		pkg.addString(chat_info)
 		return pkg
-	
-       
+
+	#message options for the clients when game starts	
+        def messages(self):
+                self.option = 0
+		self.option = str(raw_input("Please Selection An Option\n1-Send A Message\n2-Check Messages\n3-Return\n"))
+                if self.option == "1":
+                        self.message()
+                if self.option == "2":
+                        self.checkMessages()
+                if self.option == "3":
+                        self.options()
+
         #function to message
+        def checkMessages(self):
+                self.username = str(raw_input("Please enter your username: "))
+                chat_message = self.username
+                request = self.checkMessagesRequest(chat_message)
+                self.cWriter.send(request,self.connection)
+                
+
+        #package message request       
+        def checkMessagesRequest(self, chat_info):
+		pkg = PyDatagram()
+		pkg.addUint16(116)
+		pkg.addString(chat_info)
+		return pkg
+       
+        #function to send a message
         def message(self):
                 self.from_Username = ""
                 self.to_Username = " "
@@ -128,8 +153,12 @@ class MyApp(ShowBase):
                                                 print "Registration was unsuccessful. Pick a different username and please try again "
                                                 print " "
                                                 self.options()#user must attempt to register again
-				elif responseCode == 4:
-					self.getFloat(data)
+				elif responseCode == 215:
+					print self.getString(data)
+					self.messages()
+				elif responseCode == 216:
+					print self.getString(data)
+					self.messages()
 				else:
 					print "nothing found"
 					
