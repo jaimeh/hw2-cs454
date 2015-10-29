@@ -28,7 +28,7 @@ class World(DirectObject):
 
     def __init__(self):
 
-        self.keyMap = {"left":0, "right":0, "forward":0, "reverse":0, "cam-left":0, "cam-right":0}
+        self.keyMap = {"left":0, "right":0, "forward":0, "reverse":0, "cam-left":0, "cam-right":0, "speed-toggle":0}
         base.win.setClearColor(Vec4(0,0,0,1))
 
         # Post the instructions
@@ -40,8 +40,7 @@ class World(DirectObject):
         self.inst5 = addInstructions(0.75, "[S]: Run Ralph Backwards")
         self.inst6 = addInstructions(0.70, "[Left Arrow]: Rotate Camera Left")
         self.inst7 = addInstructions(0.65, "[Right Arrow]: Rotate Camera Right")
-        self.inst8 = addInstructions(0.60, "[Down Arrow]: Slow Down Ralph")
-        self.inst9 = addInstructions(0.55, "[Up Arrow]: Speed Up Ralph")
+        self.inst8 = addInstructions(0.60, "[Tab]: Slow Down Ralph")
 
         # Set up the environment
 
@@ -89,12 +88,14 @@ class World(DirectObject):
         self.accept("d", self.setKey, ["right",1])
         self.accept("w", self.setKey, ["forward",1])
         self.accept("s", self.setKey, ["reverse",1])
+        self.accept("tab", self.setKey, ["speed-toggle",1])
         self.accept("arrow_left", self.setKey, ["cam-left",1])
         self.accept("arrow_right", self.setKey, ["cam-right",1])
         self.accept("a-up", self.setKey, ["left",0])
         self.accept("d-up", self.setKey, ["right",0])
         self.accept("w-up", self.setKey, ["forward",0])
         self.accept("s-up", self.setKey, ["reverse",0])
+        self.accept("tab-up", self.setKey, ["speed-toggle",0])
         self.accept("arrow_left-up", self.setKey, ["cam-left",0])
         self.accept("arrow_right-up", self.setKey, ["cam-right",0])
 
@@ -103,6 +104,10 @@ class World(DirectObject):
         # Game state variables
 
         self.isMoving = False
+        self.isWalking = False
+
+        # Can ralph move (for collision)
+        self.canMove = True;
 
         # Set up the camera
 
@@ -128,6 +133,31 @@ class World(DirectObject):
     # Accepts arrow keys to move either the player or the menu cursor,
     # Also deals with grid checking and collision detection
 
+    def checkCollision(self):
+
+        if ((self.ralph.getPos() - self.ball1.position()).length() < 0.5):
+            self.canMove=False
+
+        elif (self.ralph.getPos() - self.ball2.position()).length() < 1.0:
+            self.canMove=False
+
+        elif (self.ralph.getPos() - self.ball3.position()).length() < 1.6:
+            self.canMove=False
+
+        elif (self.ralph.getPos() - self.car.position()).length() < 1.6:
+            self.canMove=False
+
+        elif (self.ralph.getPos() - self.panda1.position()).length() < 1.6:
+            self.canMove=False
+
+        elif (self.ralph.getPos() - self.panda2.position()).length() < 1.6:
+            self.canMove=False
+
+        else:
+            self.canMove=True
+
+        return not self.canMove
+
     def move(self, task):
 
         # If the camera-left key is pressed, move camera left.
@@ -147,37 +177,69 @@ class World(DirectObject):
         # If a move-key is pressed, move ralph in the specified direction.
 
         if (self.keyMap["left"]!=0):
+            if not(self.canMove):
+                self.canMove=True
             self.ralph.setH(self.ralph.getH() + 300 * globalClock.getDt())
         if (self.keyMap["right"]!=0):
+            if not(self.canMove):
+                self.canMove=True
             self.ralph.setH(self.ralph.getH() - 300 * globalClock.getDt())
         if (self.keyMap["forward"]!=0):
-            self.ralph.setY(self.ralph, -25 * globalClock.getDt())
+            if (self.keyMap["speed-toggle"]!=0):
+                self.ralph.setY(self.ralph, -10 * globalClock.getDt())
+                if self.checkCollision():
+                    self.ralph.setY(self.ralph, +10 * globalClock.getDt())
+            else:
+                self.ralph.setY(self.ralph, -25 * globalClock.getDt())
+                if self.checkCollision():
+                    self.ralph.setY(self.ralph, +25 * globalClock.getDt())
+
         if (self.keyMap["reverse"]!=0):
-            self.ralph.setY(self.ralph, +25 * globalClock.getDt())
-        #if (self.keyMap["fast"]!=0):
-        #    x = 0.5
-        #if (self.keyMap["slow"]!=0):
-        #    x = 0.1
+            if (self.keyMap["speed-toggle"]!=0):
+                self.ralph.setY(self.ralph, +10 * globalClock.getDt())
+                if self.checkCollision():
+                    self.ralph.setY(self.ralph, -10 * globalClock.getDt())
+            else:
+                self.ralph.setY(self.ralph, +25 * globalClock.getDt())
+                if self.checkCollision():
+                    self.ralph.setY(self.ralph, -250 * globalClock.getDt())
 
         # If ralph is moving, loop the run animation.
         # If he is standing still, stop the animation.
 
         if ((self.keyMap["forward"]!=0) or (self.keyMap["left"]!=0) or
+            (self.keyMap["right"]!=0)) and (self.keyMap["speed-toggle"]!=0):
+            if self.isWalking is False:
+                self.isWalking = True
+                self.ralph.setPlayRate(1, "walk")
+                self.ralph.loop("walk")
+
+        elif ((self.keyMap["forward"]!=0) or (self.keyMap["left"]!=0) or
             (self.keyMap["right"]!=0)):
-            if self.isMoving is False:
+            if self.isMoving is False or self.isWalking:
+                self.isWalking = False
+                self.isMoving = True
                 self.ralph.setPlayRate(1, "run")
                 self.ralph.loop("run")
-                self.isMoving = True
+
+        elif (self.keyMap["reverse"]!=0) and (self.keyMap["speed-toggle"]!=0):
+            if self.isWalking is False:
+                self.isWalking = True
+                self.ralph.setPlayRate(-1, "walk")
+                self.ralph.loop("walk")
+
         elif (self.keyMap["reverse"]!=0):
-            if self.isMoving is False:
+            if self.isMoving is False or self.isWalking:
+                self.isWalking = False
+                self.isMoving = True
                 self.ralph.setPlayRate(-1, "run")
                 self.ralph.loop("run")
-                self.isMoving = True
         else:
             if self.isMoving:
                 self.ralph.stop()
                 self.ralph.pose("walk",5)
                 self.isMoving = False
+                self.isWalking = False
 
         # If the camera is too far from ralph, move it closer.
         # If the camera is too close to ralph, move it farther.

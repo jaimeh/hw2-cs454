@@ -15,3 +15,6 @@ class Ball:
     def rotate(self, target):
         if self.model.getPos(target).length() < 50:
             self.model.setH(self.model.getH() + 90 * globalClock.getDt())
+
+    def position(self):
+        return self.model.getPos()
