@@ -49,4 +49,7 @@ class Panda:
                     self.falling = False
                     self.timer = time
                     self.grav = 1
+
+    def position(self):
+        return self.actor.getPos()
                     

@@ -102,6 +102,9 @@ class World(DirectObject):
 
         self.isMoving = False
 
+        # Can ralph move (for collision)
+        self.canMove = True;
+
         # Set up the camera
 
         base.disableMouse()
@@ -135,6 +138,32 @@ class World(DirectObject):
         self.ball1.setScale(0.3)
         self.ball1.setPos(10, 0, 0.35)
 
+    def checkCollision(self, move):
+        if self.canMove:
+            self.ralph.setY(self.ralph, move * globalClock.getDt())
+
+        if (self.ralph.getPos() - self.ball1.position()).length() < 0.5:
+            self.canMove=False
+
+        elif (self.ralph.getPos() - self.ball2.position()).length() < 1.0:
+            self.canMove=False
+
+        elif (self.ralph.getPos() - self.ball3.position()).length() < 1.6:
+            self.canMove=False
+
+        elif (self.ralph.getPos() - self.car.position()).length() < 1.6:
+            self.canMove=False
+
+        elif (self.ralph.getPos() - self.panda1.position()).length() < 1.6:
+            self.canMove=False
+
+        elif (self.ralph.getPos() - self.panda2.position()).length() < 1.6:
+            self.canMove=False
+
+        else:
+            self.canMove=True
+        
+
     def move(self, task):
 
         # If the camera-left key is pressed, move camera left.
@@ -154,13 +183,19 @@ class World(DirectObject):
         # If a move-key is pressed, move ralph in the specified direction.
 
         if (self.keyMap["left"]!=0):
+            if not(self.canMove):
+                self.canMove=True
             self.ralph.setH(self.ralph.getH() + 300 * globalClock.getDt())
         if (self.keyMap["right"]!=0):
+            if not(self.canMove):
+                self.canMove=True
             self.ralph.setH(self.ralph.getH() - 300 * globalClock.getDt())
         if (self.keyMap["forward"]!=0):
-            self.ralph.setY(self.ralph, -25 * globalClock.getDt())
+            self.checkCollision(-25)
+            #self.ralph.setY(self.ralph, -25 * globalClock.getDt())
         if (self.keyMap["reverse"]!=0):
-            self.ralph.setY(self.ralph, +25 * globalClock.getDt())
+            self.checkCollision(+25)
+            #self.ralph.setY(self.ralph, +25 * globalClock.getDt())
 
         # If ralph is moving, loop the run animation.
         # If he is standing still, stop the animation.
