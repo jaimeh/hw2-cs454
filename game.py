@@ -28,7 +28,7 @@ class World(DirectObject):
 
     def __init__(self):
 
-        self.keyMap = {"left":0, "right":0, "forward":0, "reverse":0, "cam-left":0, "cam-right":0}
+        self.keyMap = {"left":0, "right":0, "forward":0, "reverse":0, "cam-left":0, "cam-right":0, "speed-toggle":0}
         base.win.setClearColor(Vec4(0,0,0,1))
 
         # Post the instructions
@@ -89,12 +89,14 @@ class World(DirectObject):
         self.accept("d", self.setKey, ["right",1])
         self.accept("w", self.setKey, ["forward",1])
         self.accept("s", self.setKey, ["reverse",1])
+        self.accept("tab", self.setKey, ["speed-toggle",1])
         self.accept("arrow_left", self.setKey, ["cam-left",1])
         self.accept("arrow_right", self.setKey, ["cam-right",1])
         self.accept("a-up", self.setKey, ["left",0])
         self.accept("d-up", self.setKey, ["right",0])
         self.accept("w-up", self.setKey, ["forward",0])
         self.accept("s-up", self.setKey, ["reverse",0])
+        self.accept("tab-up", self.setKey, ["speed-toggle",0])
         self.accept("arrow_left-up", self.setKey, ["cam-left",0])
         self.accept("arrow_right-up", self.setKey, ["cam-right",0])
 
@@ -103,6 +105,7 @@ class World(DirectObject):
         # Game state variables
 
         self.isMoving = False
+        self.isWalking = False
 
         # Set up the camera
 
@@ -151,9 +154,15 @@ class World(DirectObject):
         if (self.keyMap["right"]!=0):
             self.ralph.setH(self.ralph.getH() - 300 * globalClock.getDt())
         if (self.keyMap["forward"]!=0):
-            self.ralph.setY(self.ralph, -25 * globalClock.getDt())
+            if (self.keyMap["speed-toggle"]!=0):
+                self.ralph.setY(self.ralph, -10 * globalClock.getDt())
+            else:
+                self.ralph.setY(self.ralph, -25 * globalClock.getDt())
         if (self.keyMap["reverse"]!=0):
-            self.ralph.setY(self.ralph, +25 * globalClock.getDt())
+            if (self.keyMap["speed-toggle"]!=0):
+                self.ralph.setY(self.ralph, +10 * globalClock.getDt())
+            else:
+                self.ralph.setY(self.ralph, +25 * globalClock.getDt())
         #if (self.keyMap["fast"]!=0):
         #    x = 0.5
         #if (self.keyMap["slow"]!=0):
@@ -163,21 +172,38 @@ class World(DirectObject):
         # If he is standing still, stop the animation.
 
         if ((self.keyMap["forward"]!=0) or (self.keyMap["left"]!=0) or
+            (self.keyMap["right"]!=0)) and (self.keyMap["speed-toggle"]!=0):
+            if self.isWalking is False:
+                self.isWalking = True
+                self.ralph.setPlayRate(1, "walk")
+                self.ralph.loop("walk")
+
+        elif ((self.keyMap["forward"]!=0) or (self.keyMap["left"]!=0) or
             (self.keyMap["right"]!=0)):
-            if self.isMoving is False:
+            if self.isMoving is False or self.isWalking:
+                self.isWalking = False
+                self.isMoving = True
                 self.ralph.setPlayRate(1, "run")
                 self.ralph.loop("run")
-                self.isMoving = True
+
+        elif (self.keyMap["reverse"]!=0) and (self.keyMap["speed-toggle"]!=0):
+            if self.isWalking is False:
+                self.isWalking = True
+                self.ralph.setPlayRate(-1, "walk")
+                self.ralph.loop("walk")
+
         elif (self.keyMap["reverse"]!=0):
-            if self.isMoving is False:
+            if self.isMoving is False or self.isWalking:
+                self.isWalking = False
+                self.isMoving = True
                 self.ralph.setPlayRate(-1, "run")
                 self.ralph.loop("run")
-                self.isMoving = True
         else:
             if self.isMoving:
                 self.ralph.stop()
                 self.ralph.pose("walk",5)
                 self.isMoving = False
+                self.isWalking = False
 
         # If the camera is too far from ralph, move it closer.
         # If the camera is too close to ralph, move it farther.
